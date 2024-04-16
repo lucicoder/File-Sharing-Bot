@@ -4,7 +4,9 @@ from aiohttp import web
 from plugins import web_server
 
 import pyromod.listen
-from pyrogram import Client
+from pyrogram import Client, InlineKeyboardMarkup, InlineKeyboardButton
+
+import pyromod.listen
 from pyrogram.enums import ParseMode
 import sys
 from datetime import datetime
@@ -29,6 +31,9 @@ class Bot(Client):
         await super().start()
         usr_bot_me = await self.get_me()
         self.uptime = datetime.now()
+        reply_marjup = InlineKeyboardMarkup([
+            [InlineKeyboardButton("ADD ME", url=f"https://t.me/{usr_bot_me.username}?startgroup=true")]
+        ])
 
         if FORCE_SUB_CHANNEL:
             try:
@@ -65,6 +70,8 @@ class Bot(Client):
 ░╚════╝░░╚════╝░╚═════╝░╚══════╝╚═╝░░╚═╝╚═════╝░░╚════╝░░░░╚═╝░░░╚══════╝
                                           """)
         self.username = usr_bot_me.username
+        await self.send_message(chat_id=CHANNEL_ID, text="Bot Started!", reply_markup=reply_markup)
+
         #web-response
         app = web.AppRunner(await web_server())
         await app.setup()
